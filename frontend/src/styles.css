@@ -1,5 +1,30 @@
 * {
- , h2 {  box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.container {
+  max-width: 420px;
+  margin: auto;
+  padding: 16px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+h1,
+h2 {
   text-align: center;
 }
 
@@ -28,27 +53,3 @@ input {
   border: 1px solid #d1d5db;
   font-size: 15px;
 }
-``
-}
-
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont;
-  background: #f8fafc;
-  color: #0f172a;
-}
-
-.container {
-  max-width: 420px;
-  margin: auto;
-  padding: 16px;
-}
-
-.card {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
