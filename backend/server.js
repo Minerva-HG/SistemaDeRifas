@@ -46,6 +46,25 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+// Preflight explícito (compatibilidad Express 5 + cors v2)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const isAllowed = origin && (
+    origin === 'https://sistema-de-rifas-jbbj.vercel.app' ||
+    /^https:\/\/sistema-de-rifas-jbbj.*\.vercel\.app$/.test(origin)
+  );
+  if (req.method === 'OPTIONS') {
+    if (isAllowed) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+    return res.status(204).send();
+  }
+  next();
+});
+
 // ✅ 4. Middleware JSON
 app.use(express.json());
 
