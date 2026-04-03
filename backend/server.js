@@ -10,25 +10,41 @@ const server = http.createServer(app);
 // ✅ 2. Socket.IO
 const io = socketio(server, {
   cors: {
-    origin: [
-      'https://sistema-de-rifas-jbbj.vercel.app',
-      'https://sistema-de-rifas-jbbj-alrxk60g7-minerva-hgs-projects.vercel.app'
-    ],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const allowed = ['https://sistema-de-rifas-jbbj.vercel.app'];
+      const isVercelPreview = /^https:\/\/sistema-de-rifas-jbbj.*\.vercel\.app$/.test(origin);
+      if (allowed.includes(origin) || isVercelPreview) callback(null, true);
+      else callback(new Error('Not allowed by CORS'));
+    },
     methods: ['GET', 'POST']
   }
 });
 app.set('io', io);
 
 // ✅ 3. CORS CORRECTO PARA PRODUCCIÓN
-app.use(cors({
-  origin: [
-    'https://sistema-de-rifas-jbbj.vercel.app',
-    'https://sistema-de-rifas-jbbj-alrxk60g7-minerva-hgs-projects.vercel.app'
-  ],
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    const allowed = [
+      'https://sistema-de-rifas-jbbj.vercel.app',
+    ];
+    // Also allow any Vercel preview deployment for this project
+    const isVercelPreview = /^https:\/\/sistema-de-rifas-jbbj.*\.vercel\.app$/.test(origin);
+    if (allowed.includes(origin) || isVercelPreview) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
-}));
+};
+
+app.options('*', cors(corsOptions)); // Handle preflight before any auth
+app.use(cors(corsOptions));
 
 // ✅ 4. Middleware JSON
 app.use(express.json());
