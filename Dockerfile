@@ -1,11 +1,11 @@
 FROM node:22-alpine
 
-WORKDIR /app/backend
+WORKDIR /app
 
 COPY backend/ .
 
-RUN npm install --production
+RUN npm install --omit=dev
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
