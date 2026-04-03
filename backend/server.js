@@ -3,38 +3,57 @@ const http = require('http');
 const cors = require('cors');
 const socketio = require('socket.io');
 
-
-// ✅ 1. Crear app PRIMERO
+// ✅ 1. Crear app
 const app = express();
 const server = http.createServer(app);
-const io = socketio(server, { cors: { origin: '*' } });
-app.set('io', io); // Para usar io en rutas
 
-// ✅ 2. Middlewares
-app.use(cors());
+// ✅ 2. Socket.IO
+const io = socketio(server, {
+  cors: {
+    origin: [
+      'https://sistema-de-rifas-jbbj.vercel.app',
+      'https://sistema-de-rifas-jbbj-alrxk60g7-minerva-hgs-projects.vercel.app'
+    ],
+    methods: ['GET', 'POST']
+  }
+});
+app.set('io', io);
+
+// ✅ 3. CORS CORRECTO PARA PRODUCCIÓN
+app.use(cors({
+  origin: [
+    'https://sistema-de-rifas-jbbj.vercel.app',
+    'https://sistema-de-rifas-jbbj-alrxk60g7-minerva-hgs-projects.vercel.app'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
+// ✅ Permitir preflight (MUY IMPORTANTE)
+app.options('*', cors());
+
+// ✅ 4. Middleware JSON
 app.use(express.json());
 
-// ✅ 3. Conectar BD
+// ✅ 5. Conectar BD
 require('./db');
 
-// ✅ 4. Rutas DESPUÉS de crear app
+// ✅ 6. Rutas
 app.use('/api/boletos', require('./routes/boletos'));
 app.use('/api/compradores', require('./routes/compradores'));
+app.use('/api/pagos', require('./routes/pagos'));
+app.use('/api/admin', require('./routes/admin'));
 
-// ✅ 5. Sockets
+// ✅ 7. Sockets
 require('./sockets')(io);
 
-// ✅ 6. Ruta de prueba
+// ✅ 8. Ruta de prueba
 app.get('/', (req, res) => {
   res.send('✅ Servidor de Rifas funcionando');
 });
 
-// ✅ 7. Arranque del servidor
+// ✅ 9. Arranque del servidor
 server.listen(3000, () => {
-  console.log('✅ Servidor corriendo en http://localhost:3000');
+  console.log('✅ Servidor corriendo en puerto 3000');
 });
-
-// Admin
-app.use('/api/admin', require('./routes/admin'));
-//pagos
-app.use('/api/pagos', require('./routes/pagos'));
