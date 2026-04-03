@@ -30,9 +30,6 @@ app.use(cors({
   credentials: true
 }));
 
-// ✅ Permitir preflight (MUY IMPORTANTE)
-app.options('*', cors());
-
 // ✅ 4. Middleware JSON
 app.use(express.json());
 
