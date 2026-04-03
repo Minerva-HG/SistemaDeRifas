@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const http = require('http');
-const cors = require('cors');
 const socketio = require('socket.io');
 
 // ✅ 1. Crear app
@@ -23,44 +22,27 @@ const io = socketio(server, {
 });
 app.set('io', io);
 
-// ✅ 3. CORS CORRECTO PARA PRODUCCIÓN
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, etc.)
-    if (!origin) return callback(null, true);
-    const allowed = [
-      'https://sistema-de-rifas-jbbj.vercel.app',
-    ];
-    // Also allow any Vercel preview deployment for this project
-    const isVercelPreview = /^https:\/\/sistema-de-rifas-jbbj.*\.vercel\.app$/.test(origin);
-    if (allowed.includes(origin) || isVercelPreview) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-};
+// ✅ 3. CORS - middleware manual (compatible con Express 5)
+const ALLOWED_ORIGINS = [
+  'https://sistema-de-rifas-jbbj.vercel.app'
+];
 
-app.use(cors(corsOptions));
-
-// Preflight explícito (compatibilidad Express 5 + cors v2)
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   const isAllowed = origin && (
-    origin === 'https://sistema-de-rifas-jbbj.vercel.app' ||
+    ALLOWED_ORIGINS.includes(origin) ||
     /^https:\/\/sistema-de-rifas-jbbj.*\.vercel\.app$/.test(origin)
   );
+
+  if (isAllowed) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+
   if (req.method === 'OPTIONS') {
-    if (isAllowed) {
-      res.setHeader('Access-Control-Allow-Origin', origin);
-      res.setHeader('Access-Control-Allow-Credentials', 'true');
-    }
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-    return res.status(204).send();
+    return res.status(204).end();
   }
   next();
 });
