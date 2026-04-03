@@ -12,14 +12,14 @@ function App() {
 
   useEffect(() => {
     if (pagoConfirmado) {
-      fetch('http://localhost:3000/api/boletos')
+      fetch(`${import.meta.env.VITE_API_URL}/api/boletos`)
         .then(res => res.json())
         .then(data => setBoletos(data));
     }
   }, [pagoConfirmado]);
 
   const registrarComprador = async () => {
-    const res = await fetch('http://localhost:3000/api/compradores', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/compradores`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nombre, whatsapp })
@@ -29,7 +29,7 @@ function App() {
   };
 
   const pagar = async () => {
-    const res = await fetch('http://localhost:3000/api/pagos', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/pagos`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ comprador_id: compradorId, monto: 50 })

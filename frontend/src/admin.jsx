@@ -8,7 +8,7 @@ function Admin() {
 
   // 🔐 PASO 7: LOGIN ADMIN + GUARDAR TOKEN
   const loginAdmin = async () => {
-    const res = await fetch('http://localhost:3000/api/admin/login', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ usuario, password })
@@ -29,7 +29,7 @@ function Admin() {
   const cargarBoletos = async () => {
     const token = localStorage.getItem('adminToken');
 
-    const res = await fetch('http://localhost:3000/api/admin/boletos', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/boletos`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
