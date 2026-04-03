@@ -30,17 +30,6 @@ app.use(cors({
   credentials: true
 }));
 
-// ✅ Permitir preflight (MUY IMPORTANTE)
-app.options('/*', cors({
-  origin: [
-    'https://sistema-de-rifas-jbbj.vercel.app',
-    'https://sistema-de-rifas-jbbj-alrxk60g7-minerva-hgs-projects.vercel.app'
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
-
 // ✅ 4. Middleware JSON
 app.use(express.json());
 
