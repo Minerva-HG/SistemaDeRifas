@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
@@ -69,7 +70,6 @@ app.get('/', (req, res) => {
 
 // ✅ PUERTO CORRECTO PARA RAILWAY (ESTO ARREGLA EL 502)
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Servidor corriendo en puerto ${PORT}`);
 });
-``
