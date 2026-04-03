@@ -43,7 +43,6 @@ const corsOptions = {
   credentials: true
 };
 
-app.options('/{*path}', cors(corsOptions)); // Handle preflight before any auth
 app.use(cors(corsOptions));
 
 // ✅ 4. Middleware JSON
