@@ -1,0 +1,42 @@
+# Versión de la sintaxis de Docker Compose que vamos a usar.
+version: '3.9'
+
+services:
+  # Definición del servicio backend.
+  backend:
+    build:
+      # Carpeta desde donde se construye la imagen del backend.
+      context: ./backend
+      # Nombre del Dockerfile dentro del contexto de construcción.
+      dockerfile: Dockerfile
+    # Nombre de la imagen que se generará para el backend.
+    image: rifas-system-backend:latest
+    # Nombre del contenedor que se creará al levantar el servicio.
+    container_name: rifas-system-backend
+    ports:
+      # Mapea el puerto 3000 del host al puerto 3000 del contenedor.
+      - "3000:3000"
+    environment:
+      # Variable de entorno para ejecutar en modo producción.
+      - NODE_ENV=production
+
+  # Definición del servicio frontend.
+  frontend:
+    build:
+      # Carpeta desde donde se construye la imagen del frontend.
+      context: ./frontend
+      # Nombre del Dockerfile dentro del contexto de construcción del frontend.
+      dockerfile: Dockerfile
+      args:
+        # Argumento de construcción para que el frontend apunte al backend local.
+        VITE_API_URL: http://localhost:3000
+    # Nombre de la imagen que se generará para el frontend.
+    image: rifas-system-frontend:latest
+    # Nombre del contenedor que se creará al levantar el servicio.
+    container_name: rifas-system-frontend
+    ports:
+      # Mapea el puerto 5173 del host al puerto 80 del contenedor.
+      - "5173:80"
+    depends_on:
+      # Indica que el frontend debe iniciarse después del backend.
+      - backend

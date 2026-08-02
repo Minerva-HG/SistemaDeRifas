@@ -1,8 +1,8 @@
-FROM node:22-alpine
+FROM node:22-bullseye
 
 WORKDIR /app
 
-COPY backend/ .
+COPY . .
 
 RUN npm install --omit=dev
 
